@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: service-provider
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      # 服务中心对应的值
+      defaultZone: http://localhost:8080/eureka/
+  instance:
+    # 自定义服务实例的别名
+    instance-id: service-provider
+    # 鼠标悬浮时左下角显示ip
+    prefer-ip-address: true
+  server:
+    # 关闭自我保护机制
+    enable-self-preservation: false
+
+info:
+  app.name: service_provider
+  company.name: kither

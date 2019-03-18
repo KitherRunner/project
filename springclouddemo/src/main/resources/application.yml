@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: kither-eureka
+eureka:
+  client:
+    # �Ƿ��Eureka Server��ȡע����Ϣ
+    fetch-registry: false
+    # �Ƿ��Լ�ע�ᵽEureka Server
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/
+
+server:
+  port: 7000
