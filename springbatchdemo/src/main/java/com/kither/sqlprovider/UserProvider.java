@@ -16,7 +16,7 @@ public class UserProvider {
      */
     public String findAll() {
         return new SQL() {{
-            SELECT("name", "gender");
+            SELECT("id","name", "gender");
             FROM("t_bd_user");
         }}.toString();
     }

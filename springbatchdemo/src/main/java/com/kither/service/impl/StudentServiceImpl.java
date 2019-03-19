@@ -4,10 +4,12 @@ import com.kither.mapper.StudentMapper;
 import com.kither.pojo.Student;
 import com.kither.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
@@ -30,6 +32,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void add(Student student) {
-studentMapper.add(student);
+        studentMapper.add(student);
     }
 }

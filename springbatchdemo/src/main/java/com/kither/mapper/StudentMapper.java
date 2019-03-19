@@ -1,9 +1,11 @@
 package com.kither.mapper;
 
 import com.kither.pojo.Student;
-import com.kither.pojo.User;
 import com.kither.sqlprovider.StudentProvider;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
