@@ -1,11 +1,18 @@
 package com.kither.pojo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
+@ApiModel(value = "User", description = "用户类")
 public class User implements Serializable {
     private static final long serialVersionUID = -2201072663014427784L;
+    @ApiModelProperty(value = "编号", name = "id", dataType = "string", example = "1")
     private Integer id;
+    @ApiModelProperty(value = "名称", name = "name", dataType = "string", example = "张三")
     private String name;
+    @ApiModelProperty(value = "性别", name = "gender", dataType = "string", example = "1")
     private String gender;
 
     public Integer getId() {
