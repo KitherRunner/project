@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" id="executor">
+        <property name="corePoolSize" value="10"/>
+        <property name="maxPoolSize" value="120"/>
+        <property name="queueCapacity" value="200"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" id="jobDetailFactoryBean">
+        <property name="targetObject" ref="userService"/>
+        <property name="targetMethod" value="findUsers"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" id="cronTrigger">
+        <property name="cronExpression" value="0/5 * * * * ?"/>
+        <property name="timeZone" value="Asia/Shanghai"/>
+        <property name="startDelay" value="10000"/>
+        <property name="jobDetail" ref="jobDetailFactoryBean"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" id="schedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger"/>
+            </list>
+        </property>
+        <property name="taskExecutor" ref="executor"/>
+    </bean>
+</beans>
