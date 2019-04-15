@@ -1,0 +1,42 @@
+# 设置项目的访问路径及端口
+server:
+  servlet:
+    context-path: /
+  port: 8080
+
+
+# 配置数据库连接信息
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql:///kingdee?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    ### 这几个属性默认是不会自定配置进DataSource的,不是其对应的属性，而是DruidDataSource(或其父类DruidAbstractDataSource)的属性，所以需要我们手动注入
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    #list集合也可以这样写： filters: stat,wall,log4j
+    filters:
+      - stat
+      - wall
+      - log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  rabbitmq:
+    password: guest
+    username: guest
+    host: 192.168.1.108
+    port: 5672
