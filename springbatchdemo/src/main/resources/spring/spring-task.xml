@@ -3,23 +3,36 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
 
+    <bean class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean" id="jobRepository">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseType" value="mysql"/>
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
 
-    <!--<batch:job id="userJob" job-repository="userRepository">
+    <bean class="org.springframework.batch.core.launch.support.SimpleJobLauncher" id="jobLauncher">
+        <property name="jobRepository" ref="jobRepository"/>
+    </bean>
+
+    <batch:job id="userJob" job-repository="jobRepository">
         <batch:step id="userStep">
-            <batch:tasklet>
+            <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="userReader" processor="userProcessor" writer="userWriter" commit-interval="2"/>
             </batch:tasklet>
+            <batch:listeners>
+                <batch:listener ref="readerListender"/>
+                <batch:listener ref="writerListender"/>
+                <batch:listener ref="processorListener"/>
+            </batch:listeners>
         </batch:step>
     </batch:job>
 
-    <bean id="userRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+    <bean id="userReader" class="com.kither.reader.UserReader" scope="step">
+        <property name="date" value="#{jobParameters['date']}"/>
     </bean>
-
-
-    <bean id="userReader" class="com.kither.reader.UserReader"/>
-
     <bean id="userProcessor" class="com.kither.processor.UserProcessor"/>
+    <bean id="userWriter" class="com.kither.writer.UserWriter"/>
 
-    <bean id="userWriter" class="com.kither.writer.UserWriter"/>-->
+    <bean class="com.kither.listener.ReaderListender" id="readerListender"/>
+    <bean class="com.kither.listener.WriterListender" id="writerListender"/>
+    <bean class="com.kither.listener.ProcessorListener" id="processorListener"/>
 </beans>

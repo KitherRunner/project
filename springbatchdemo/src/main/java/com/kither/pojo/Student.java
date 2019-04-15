@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Student implements Serializable {
     private static final long serialVersionUID = 4025249461687019320L;
     @ApiModelProperty(value = "编号", name = "id", dataType = "string", example = "1")
-    private String id;
+    private Integer id;
     @ApiModelProperty(value = "名称", name = "name", dataType = "string", example = "张三")
     private String name;
     @ApiModelProperty(value = "性别", name = "gender", dataType = "string", example = "1")
@@ -17,11 +17,11 @@ public class Student implements Serializable {
     @ApiModelProperty(value = "说明", name = "comment", dataType = "string", example = "我是张三")
     private String comment;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
