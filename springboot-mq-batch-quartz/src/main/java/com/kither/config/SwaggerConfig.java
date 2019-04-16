@@ -2,7 +2,6 @@ package com.kither.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -14,7 +13,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-@EnableWebMvc
+// 使用springboot不能添加这个注解，添加了之后无法访问swagger-ui.html（在springmvc中需要添加）
+// @EnableWebMvc
 public class SwaggerConfig {
 
     @Bean
