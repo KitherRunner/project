@@ -15,6 +15,20 @@ public class User implements Serializable {
     @ApiModelProperty(value = "性别", name = "gender", dataType = "string", example = "1")
     private String gender;
 
+    public User() {
+    }
+
+    public User(String name, String gender) {
+        this.name = name;
+        this.gender = gender;
+    }
+
+    public User(Integer id, String name, String gender) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+    }
+
     public Integer getId() {
         return id;
     }

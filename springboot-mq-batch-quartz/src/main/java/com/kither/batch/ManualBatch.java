@@ -29,7 +29,7 @@ public class ManualBatch {
         JobParameter jobParameter = new JobParameter(new Date());
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         jobParameterMap.put("date", jobParameter);
-        JobExecution run = jobLauncher.run(job, new JobParameters(jobParameterMap));
-        System.out.println("status: " + run.getStatus());
+//        JobExecution run = jobLauncher.run(job, new JobParameters(jobParameterMap));
+//        System.out.println("status: " + run.getStatus());
     }
 }
