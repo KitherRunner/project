@@ -1,6 +1,7 @@
 package com.kither.config;
 
 import com.kither.mq.Customer;
+import com.kither.mq.ManulalCustomer;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -31,8 +32,13 @@ public class MQConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    // 点播模式消费者
     @Autowired
     private Customer customer;
+
+    //广播/订阅模式消费者
+    @Autowired
+    private ManulalCustomer manulalCustomer;
 
     @Bean
     // 使用下面这个注解注入host等值报错：Error:java: java.lang.StackOverflowError
@@ -41,6 +47,9 @@ public class MQConfig {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host, port);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
+        // 如果想要使用回调机制，需要设置此属性
+        connectionFactory.setPublisherConfirms(true); // 设置成功时回调
+        connectionFactory.setPublisherReturns(true); // 设置失败时回调
         return connectionFactory;
     }
 
@@ -62,7 +71,7 @@ public class MQConfig {
         return new RabbitAdmin(connectionFactory);
     }
 
-    // 设置转换器
+    // 设置点播转换器
     @Bean
     public Exchange directExchange() {
         // 设置一对一形式的转换器
@@ -80,7 +89,7 @@ public class MQConfig {
     public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
         simpleMessageListenerContainer.setMessageListener(customer); // 设置实际的监听类(消息的消费类)
-        simpleMessageListenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO); // 设置自动确认消息消费成功
+        simpleMessageListenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO); // 设置自动确认消息消费成功，自动删除队列中的消息
         simpleMessageListenerContainer.setQueueNames("kitherQueue"); // 设置监听的队列
         return simpleMessageListenerContainer;
     }
@@ -88,7 +97,39 @@ public class MQConfig {
     // 设置转换器和队列的绑定关系
     @Bean
     public Binding binding() {
-        // 通过路由key关联转换器和队列(一对一需要发送的routingKey与此处设置的完全一致)
+        // 通过指定路由key关联转换器和队列(一对一需要发送的routingKey与此处设置的完全一致)
         return BindingBuilder.bind(queue()).to(directExchange()).with("sendDirect").noargs();
+    }
+
+    // 设置与手动ack队列绑定的转换器(广播/订阅模式)
+    @Bean
+    public Exchange manualTopicExchange() {
+        // 设置广播/订阅形式的转换器
+        return new TopicExchange("manualExchange", true, false);
+    }
+
+    // 设置手动ack的队列
+    @Bean
+    public Queue manualQueue() {
+        return new Queue("manualQueue");
+    }
+
+
+    // 监听获取mq发送的消息
+    @Bean
+    public MessageListenerContainer topicMessageListenerContainer(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
+        simpleMessageListenerContainer.setMessageListener(manulalCustomer); // 设置实际的监听类(消息的消费类)
+        simpleMessageListenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL); // 设置手动确认消息消费成功，手动确认后删除队列中的消息
+        simpleMessageListenerContainer.setQueueNames("manualQueue"); // 设置监听的队列
+        return simpleMessageListenerContainer;
+    }
+
+
+    // 设置手动应答的转换器与队列的绑定关系
+    @Bean
+    public Binding manualBinding() {
+        // # 匹配一个或多个单词
+        return BindingBuilder.bind(manualQueue()).to(manualTopicExchange()).with("manual.#").noargs();
     }
 }
