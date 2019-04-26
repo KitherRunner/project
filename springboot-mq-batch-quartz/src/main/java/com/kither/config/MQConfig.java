@@ -129,7 +129,7 @@ public class MQConfig {
     // 设置手动应答的转换器与队列的绑定关系
     @Bean
     public Binding manualBinding() {
-        // # 匹配一个或多个单词
+        // # 匹配零个或多个单词，* 匹配一个单词
         return BindingBuilder.bind(manualQueue()).to(manualTopicExchange()).with("manual.#").noargs();
     }
 }
